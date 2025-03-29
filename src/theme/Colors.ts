@@ -11,6 +11,8 @@ export interface IColor {
     border: string;
     fill: string,
     active: string,
+    disabled: string; // Nova propriedade para elementos desabilitados
+    error: string; // Nova propriedade para mensagens de erro
 }
 
 export const ThemeLight: IColor = {
@@ -35,6 +37,8 @@ export const ThemeLight: IColor = {
 
     // Status
     active: 'rgb(0, 153, 160)', // Antes: #0099A0
+    disabled: 'rgb(200, 200, 200)', // Cor para elementos desabilitados no tema claro
+    error: 'rgb(220, 53, 69)', // Cor vermelha para erros no tema claro
 };
 
 export const ThemeDark: IColor = {
@@ -59,4 +63,6 @@ export const ThemeDark: IColor = {
 
     // Status
     active: 'rgb(206, 145, 120)', // Antes: #CE9178
+    disabled: 'rgb(100, 100, 100)', // Cor para elementos desabilitados no tema escuro
+    error: 'rgb(255, 99, 71)', // Cor vermelha para erros no tema escuro
 };

@@ -20,6 +20,7 @@ import BtnNext from '../../components/buttons/btnNext';
 import { StackNavigation } from '../../routes/stack.routes';
 import AuthContext from '../../contexts/auth';
 import { useNavigation } from '@react-navigation/native';
+import Button from '../../components/Button';
 /* import Loading from '../../components/Loading/Loading';
 import Btnprosseguir from '../../components/buttons/Btnprosseguir';
 import BackButton from '../../components/buttons/BackButton';
@@ -36,8 +37,8 @@ export default function LoginPassword() {
     const styles = useThemeAwareObject(_styles);
     const navigation = useNavigation<StackNavigation>();
 
-    /* const { addAlert } = useContext(NotificationGlobalContext);
-    const { stateAuth, dispatchAuth } = useContext(AuthContext); */
+    /* const { addAlert } = useContext(NotificationGlobalContext); */
+    //const { stateAuth, dispatchAuth } = useContext(AuthContext);
     /* const { usertasy } = stateAuth; */
     const [loadingActive, setLoadingActive] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
@@ -253,9 +254,15 @@ export default function LoginPassword() {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.box2}>
-                                    <BtnNext
-                                        valueText="Prosseguir"
-                                        onPress={() => /* handleSubmit() */ setsigned(true)}
+                                    <Button
+                                        title="Prosseguir"
+                                        variant="primary"
+                                        size="large"
+                                        shape="pill"
+                                        onPress={() => setsigned(true)}
+                                        style={{ width: '50%' }}
+                                        textStyle={{ fontSize: 25 }}
+                                        elevated
                                     />
                                 </View>
                             </KeyboardAvoidingView>

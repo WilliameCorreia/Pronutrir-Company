@@ -2,7 +2,6 @@ import React from 'react';
 import { View, ImageBackground } from 'react-native';
 import { useThemeAwareObject } from '../../hooks/useThemedStyles';
 
-import Homestyles from './style';
 //import BtnNext from '../../components/buttons/btnNext';
 import { useNavigation } from '@react-navigation/native';
 import useTheme from '../../hooks/useTheme';
@@ -10,11 +9,13 @@ import CarouselHome from '../../components/carousel/carouselHome';
 import LogoNameSvg from '../../../assets/svg/logoNameSvg';
 import BtnNext from '../../components/buttons/btnNext';
 import { StackNavigation } from '../../routes/stack.routes';
+import createStyles from './style';
+import Button from '../../components/Button';
 
 export default function Home() {
 
     const theme = useTheme();
-    const styles = useThemeAwareObject(Homestyles);
+    const styles = useThemeAwareObject(createStyles);
     const navigation = useNavigation<StackNavigation>();
 
     return (
@@ -32,9 +33,15 @@ export default function Home() {
                     <CarouselHome />
                 </View>
                 <View style={styles.box3}>
-                    <BtnNext
-                        valueText="Começar"
+                    <Button
+                        title="Começar"
+                        variant="primary"
+                        size="large"
+                        shape="pill"
                         onPress={() => navigation.navigate("LoginCpf")}
+                        style={{width: '50%'}}
+                        textStyle={{ fontSize: 25 }}
+                        elevated
                     />
                 </View>
             </ImageBackground>

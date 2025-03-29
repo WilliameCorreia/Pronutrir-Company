@@ -21,8 +21,7 @@ import { StackNavigation } from '../../routes/stack.routes';
 import AuthContext from '../../contexts/auth';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import ButtonExample from '../examples/ButtonExample';
-import Button from '../buttons/btn';
+import Button from '../Button';
 //import { savePerfil, saveUnidade } from '../../utils';
 //import { IPerfis } from '../../reducers/UserReducer';
 /* import NotificationMultOptions, {
@@ -161,11 +160,12 @@ const DrawerContent = (props: DrawerContentComponentProps) => {
         )} */}
       </View>
       <View style={styles.box3}>
-        <Button
-          title="Sair"
-          onPress={() => console.log('Botão outline pressionado')}
-          type="secondary"
-          elevation={3}
+
+      <Button 
+          title="Primário Grande Cápsula" 
+          variant="primary" 
+          size="large" 
+          shape="pill" 
         />
         {/* <Text style={styles.text2}>Versão {VersionInfo.appVersion}</Text> */}
       </View>

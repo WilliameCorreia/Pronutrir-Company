@@ -156,7 +156,7 @@ const createStyles = (theme: ThemeContextData) => {
             justifyContent: 'center',
         },
         text: {
-            fontSize: RFValue(10, screenHeight),
+            fontSize: RFValue(11, screenHeight),
             fontFamily: theme.typography.FONTES.Regular,
             letterSpacing: theme.typography.LETTERSPACING.S,
             textAlign: 'center',

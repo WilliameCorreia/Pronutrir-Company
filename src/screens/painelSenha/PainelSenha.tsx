@@ -4,13 +4,13 @@ import { useThemeAwareObject } from '../../hooks/useThemedStyles';
 import { ThemeContextData } from '../../contexts/themeContext';
 import ButtonExamples from '../../examples/ButtonExamples';
 
-export default function Busca() {
+export default function PainelSenha() {
 
     const styles = useThemeAwareObject(createStyles);
 
     return (
         <View style={styles.container}>
-            <ButtonExamples />
+            <Text>PainelSenha</Text>
         </View>
     )
 }

@@ -16,7 +16,9 @@ const createStyles = (theme: ThemeContextData) => {
         },
         box2: {
             width: (Dimensions.get('screen').width),
-            height: (Dimensions.get('screen').height / 15)
+            height: (Dimensions.get('screen').height / 15),
+            justifyContent: 'center',
+            alignItems: 'center',
         },
         textInfo: {
             textAlign: 'center',

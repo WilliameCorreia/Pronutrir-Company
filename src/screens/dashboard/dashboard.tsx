@@ -13,16 +13,16 @@ import { useNavigation } from '@react-navigation/native';
 //import SinaisVitaisContext from '../../contexts/sinaisVitaisContext';
 import AuthContext from '../../contexts/auth';
 import BtnDashboardComponent from '../../components/buttons/btnDashboard';
+import { StackNavigationDashboard } from '../../routes/stack.routes';
 // SelectedDropdown from '../../components/selectedDropdown/SelectedDropdown';
 //import { RFPercentage } from 'react-native-responsive-fontsize';
 //import { useUnidades, IUnidade } from '../../hooks/useEstabelecimentos';
 //import { saveUnidade } from '../../utils';
 // { useQueryClient } from 'react-query';
-//import { StackNavigation } from '../../routes/routeDashboard';
 
 const DashBoard: React.FC = () => {
 
-    //const navigation = useNavigation<StackNavigation>();
+    const navigation = useNavigation<StackNavigationDashboard>();
 
     const styles = useThemeAwareObject(createStyles);
 
@@ -99,7 +99,7 @@ const DashBoard: React.FC = () => {
                     />
                     <BtnDashboardComponent
                         disabled={false}
-                        onpress={() => console.log('teste')}
+                        onpress={() => navigation.navigate('PainelSenha')}
                         ImgSVG={AtendimentoSvg}
                         label={'Painel de senhas'}
                     />

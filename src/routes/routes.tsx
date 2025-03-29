@@ -2,19 +2,21 @@ import React, { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 import { ThemeProvider } from '../contexts/themeContext';
-import { StackRoutesApp } from './stack.routes';
-import AuthContext from '../contexts/auth';
+import { StackRoutesApp, StackRoutesDashboard, StackRoutesExemples } from './stack.routes';
 import Inicial from '../screens/Inicial';
 import DrawerRoutes from './drawer.routes';
+import AuthContext from '../contexts/auth';
 
 type Props = {}
 
 const Routes = (props: Props) => {
 
-    //const { signed, loading } = useContext(AuthContext);
+    const { signed, loading } = useContext(AuthContext);
 
-    const signed: boolean = true;
-    const loading: boolean = false;
+    //const signed: boolean = false;
+    //const loading: boolean = false;
+
+    //return <StackRoutesExemples />
 
     if (loading) {
         return (<Inicial />);
@@ -28,7 +30,6 @@ const Routes = (props: Props) => {
             }}
                 edges={Platform.OS == 'android' ? ['top'] : ['top']}>
                 <ThemeProvider>
-                    {/* <Inicial /> */}
                     <DrawerRoutes />
                 </ThemeProvider>
             </SafeAreaView>

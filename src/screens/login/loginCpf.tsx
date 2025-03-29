@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-/* import { TextInputMask } from 'react-native-masked-text'; */
+import { TextInputMask } from 'react-native-masked-text';
 /* import Btnprosseguir from '../../components/buttons/Btnprosseguir'; */
 import styles from './style';
 import BackButton from '../../components/buttons/backButton';
@@ -25,6 +25,8 @@ import _styles from './style';
 import BtnNext from '../../components/buttons/btnNext';
 import { StackNavigation } from '../../routes/stack.routes';
 import { useNavigation } from '@react-navigation/native';
+import Button from '../../components/Button';
+import Api from '../../services/api';
 
 export default function LoginCpf() {
   /* const { addAlert, addNotification } = useContext(NotificationGlobalContext);
@@ -43,12 +45,12 @@ export default function LoginCpf() {
   const CPF = useRef(null);
 
   // consulta o cpf do cliente na api tasy
-  /* async function getCpf(cpf) {
+  async function getCpf(cpf: string) {
     return Api.get(`PessoaFisica/buscaCpfEmail?cpf=${cpf}`).then(response => {
       const { result } = response.data;
       return result;
     });
-  } */
+  }
 
   /* const consultaFirebase = async (cpf, email) => {
     const usersRef = firestore().collection('users');
@@ -122,13 +124,13 @@ export default function LoginCpf() {
     }; */
 
   const FormSchema = Yup.object().shape({
-    /*  CPF: Yup.string()
-         .required('CPF é obrigatório!')
-         .test(
-             'validationCpf',
-             'CPF inválido',
-             value => value && valicacaoCPF(value.replace(/[.-]/g, '')),
-         ), */
+    /* CPF: Yup.string()
+      .required('CPF é obrigatório!')
+      .test(
+        'validationCpf',
+        'CPF inválido',
+        value => value && valicacaoCPF(value.replace(/[.-]/g, '')),
+      ), */
   });
 
   return (
@@ -141,7 +143,7 @@ export default function LoginCpf() {
         </View>
         <Formik
           initialValues={{
-            Senha: '',
+            CPF: '',
           }}
           onSubmit={(values) => {
             /* autenticacao(values.Senha); */
@@ -167,23 +169,29 @@ export default function LoginCpf() {
                   <Text style={styles.textInfo}>Informe seu CPF</Text>
                   <Text style={styles.text}>Informe os dados para validar seu acesso!</Text>
                   <View style={styles.sectionInput}>
-                    {/* <TextInputMask
-                                        ref={CPF}
-                                        style={styles.input}
-                                        type={`cpf`}
-                                        value={values.CPF}
-                                        onChangeText={handleChange('CPF')}
-                                        onBlur={handleBlur('CPF')}
-                                        /> */}
-                    {/*  {touched.CPF && errors.CPF && (
-                                            <Text style={styles.Error}>{errors.CPF}</Text>
-                                        )} */}
+                    <TextInputMask
+                      ref={CPF}
+                      style={styles.input}
+                      type={`cpf`}
+                      value={values.CPF}
+                      onChangeText={handleChange('CPF')}
+                      onBlur={handleBlur('CPF')}
+                    />
+                    {touched.CPF && errors.CPF && (
+                      <Text style={styles.Error}>{errors.CPF}</Text>
+                    )}
                   </View>
                 </View>
                 <View style={styles.box2}>
-                  <BtnNext
-                    valueText="Prosseguir"
-                    onPress={() => /* handleSubmit() */ navigation.navigate("LoginPassword")}
+                  <Button
+                    title="Prosseguir"
+                    variant="primary"
+                    size="large"
+                    shape="pill"
+                    onPress={() => navigation.navigate("LoginPassword")}
+                    style={{ width: '50%' }}
+                    textStyle={{ fontSize: 25 }}
+                    elevated
                   />
                 </View>
               </KeyboardAvoidingView>

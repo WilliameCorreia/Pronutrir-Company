@@ -5,6 +5,7 @@ import MyTabBar from '../components/BottomContent/bottomContent';
 import Dashboard from '../screens/dashboard/dashboard';
 import Busca from '../screens/buscar/busca';
 import Perfil from '../screens/perfil/perfil';
+import { StackRoutesDashboard } from './stack.routes';
 
 
 const Tab = createBottomTabNavigator();
@@ -21,7 +22,7 @@ const TabRoutes: React.FC = () => {
             />
             <Tab.Screen
                 name="inicio"
-                component={Dashboard}
+                component={StackRoutesDashboard}
                 options={{
                     headerShown: false
                 }}
@@ -42,6 +43,7 @@ const TabRoutes: React.FC = () => {
                     tabBarStyle: { display: 'none' }
                 }}
             />
+            
         </Tab.Navigator>
     );
 }

@@ -10,6 +10,9 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-na
 import Home from '../screens/home/home';
 import LoginPassword from '../screens/login/loginPassword';
 import LoginCpf from '../screens/login/loginCpf';
+import { ButtonExamples, CardExamples, ComponentsShowcase } from '../screens/Examples';
+import PainelSenha from '../screens/painelSenha/PainelSenha';
+import DashBoard from '../screens/dashboard/dashboard';
 
 export type RootStackParamList = {
     Dashboard: undefined;
@@ -19,6 +22,23 @@ export type RootStackParamList = {
     Busca: undefined;
     Perfil: undefined;
 };
+
+export type RootStackParamListExemples = {
+    ButtonExamples: undefined;
+    CardExamples: undefined;
+    ComponentsShowcase: undefined;
+}
+
+export type RootStackParamListDashboard = {
+    DashBoard: undefined;
+    PainelSenha: undefined;
+}
+
+const StackDashboard = createNativeStackNavigator<RootStackParamListDashboard>();
+export type StackNavigationDashboard = NativeStackNavigationProp<RootStackParamListDashboard>;
+
+const StackExemples = createNativeStackNavigator<RootStackParamListExemples>();
+export type StackNavigationExemples = NativeStackNavigationProp<RootStackParamListExemples>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 export type StackNavigation = NativeStackNavigationProp<RootStackParamList>;
@@ -48,4 +68,33 @@ function StackRoutesApp() {
     )
 }
 
-export { /* StackRoutes, */ StackRoutesApp }
+function StackRoutesExemples() {
+    return (
+        <StackExemples.Navigator
+            initialRouteName="ComponentsShowcase"
+            screenOptions={{
+                animation: 'fade',
+            }}
+        >
+            <StackExemples.Screen name='ComponentsShowcase' component={ComponentsShowcase} options={{ headerShown: false }} />
+            <StackExemples.Screen name='ButtonExamples' component={ButtonExamples} options={{ headerShown: false }} />
+            <StackExemples.Screen name='CardExamples' component={CardExamples} options={{ headerShown: false }} />
+        </StackExemples.Navigator>
+    )
+}
+
+function StackRoutesDashboard() {
+    return (
+        <StackDashboard.Navigator
+            initialRouteName="DashBoard"
+            screenOptions={{
+                animation: 'fade',
+            }}
+        >
+            <StackDashboard.Screen name='DashBoard' component={DashBoard} options={{ headerShown: false }} />
+            <StackDashboard.Screen name='PainelSenha' component={PainelSenha} options={{ headerShown: false }} />
+        </StackDashboard.Navigator>
+    )
+}
+
+export { StackRoutesApp, StackRoutesExemples, StackRoutesDashboard };

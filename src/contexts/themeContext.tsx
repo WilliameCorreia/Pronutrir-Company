@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
-import { IColor, ThemeDark, ThemeLight } from '../theme/Colors';
 import { ITypography, typography } from '../theme/typography';
+import { IColor, ThemeDark, ThemeLight } from '../theme/Colors';
 
 type ITheme = "ThemeLight" | "ThemeDark";
 export interface ThemeContextData {
