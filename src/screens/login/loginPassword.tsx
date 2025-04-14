@@ -13,7 +13,7 @@ import {
 
 import _styles from './style';
 import { useThemeAwareObject } from '../../hooks/useThemedStyles';
-import BackButton from '../../components/buttons/backButton';
+import CicleButton from '../../components/buttons/circleButton';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import BtnNext from '../../components/buttons/btnNext';
@@ -23,23 +23,27 @@ import { useNavigation } from '@react-navigation/native';
 import Button from '../../components/Button';
 /* import Loading from '../../components/Loading/Loading';
 import Btnprosseguir from '../../components/buttons/Btnprosseguir';
-import BackButton from '../../components/buttons/BackButton';
+import CicleButton from '../../components/buttons/circleButton';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import AuthContext from '../../contexts/auth';
 import VisaoPassword from '../../componentes/visaoPassword';
 import Notification from '../../componentes/Notification';
 import NotificationGlobalContext from '../../contexts/notificationGlobalContext'; */
-export default function LoginPassword() {
+import { collection, getDoc, getFirestore, query, where, getDocs } from "firebase/firestore";
+import { app, auth } from '../../firebaseConfig';
 
-    const { setsigned } = useContext(AuthContext);
+import { signInWithEmailAndPassword} from "firebase/auth";
+import Api from '../../services/api';
+import Loading from '../../components/Loading/Loading';
+export default function LoginPassword() {
 
     const styles = useThemeAwareObject(_styles);
     const navigation = useNavigation<StackNavigation>();
 
     /* const { addAlert } = useContext(NotificationGlobalContext); */
-    //const { stateAuth, dispatchAuth } = useContext(AuthContext);
-    /* const { usertasy } = stateAuth; */
+    const { stateAuth, dispatchAuth } = useContext(AuthContext);
+    const { usertasy } = stateAuth;
     const [loadingActive, setLoadingActive] = useState(false);
     const [showPassword, setShowPassword] = useState(true);
     const [modalNotification, setModalNotification] = useState({
@@ -51,32 +55,35 @@ export default function LoginPassword() {
     const Senha = useRef(null);
 
     // consulta o cpf do cliente na api tasy
-    /* async function getCpf(cpf) {
+    async function getCpf(cpf: string) {
         return Api.get(`PessoaFisica/buscaCpfEmail?cpf=${cpf}`).then(
             (response) => {
                 const { result } = response.data;
                 return result;
             },
         );
-    } */
+    }
 
-    /* const consultaFirebase = async (cpf) => {
-        const usersRef = firestore().collection('users');
-        let dados = null;
+    const consultaFirebase = async (cpf: string) => {
+        const db = getFirestore(app);
+      
+      // Cria a consulta para verificar documentos onde o campo cpf é igual ao cpf fornecido
+      const q = query(collection(db, 'users'), where('cpf', '==', cpf));
+      
+      // Executa a consulta e obtém os documentos
+      const querySnapshot = await getDocs(q);
 
-        const cpfExiste = await usersRef.where('cpf', '==', cpf).get();
+      // Check if we have any matching documents
+      if (querySnapshot.empty) {
+        return null;
+      }
+      
+      // Return the first matching document's data
+      const doc = querySnapshot.docs[0];
+      return doc.data();
+    };
 
-        if (cpfExiste.size !== 0) {
-            cpfExiste.docs.forEach((item) => {
-                dados = item.data();
-            });
-            return dados;
-        } else {
-            return null;
-        }
-    }; */
-
-    /* const updateEmailFirebase = async (email, cd_firebase) => {
+    const updateEmailFirebase = async (email: string, cd_firebase: string) => {
         var user = auth().currentUser;
         const usersRef = firestore().collection('users');
 
@@ -89,30 +96,31 @@ export default function LoginPassword() {
             token: cd_firebase.token,
             nM_USUARIO: 'WebApp',
         });
-    }; */
+    };
 
-    /* const autenticar = async (email, password) => {
-        return auth()
-            .signInWithEmailAndPassword(email, password)
+    const autenticar = async (email: string, password: string) => {
+        return signInWithEmailAndPassword(auth, email, password)
             .then((response) => {
+                debugger;
                 return true;
-            });
-    }; */
+            }).catch((error) => {
+                const { code, message } = error;
+            })  
+    };
 
-    /*  const autenticacao = async (password) => {
+     const autenticacao = async (password: string) => {
+        debugger;
          setLoadingActive(true);
          try {
-             const cd_firestone = await consultaFirebase(
-                 usertasy.nR_CPF.replace(/[.-]/g, ''),
-             );
+             const cd_firestone = await consultaFirebase(usertasy.nR_CPF.replace(/[.-]/g, ''));
  
-             if (usertasy.dS_EMAIL === cd_firestone.email) {
-                 const authFirebase = await autenticar(
+             if (usertasy.dS_EMAIL === cd_firestone?.email) {
+                 await autenticar(
                      cd_firestone.email,
                      password,
                  );
              } else {
-                 await autenticar(cd_firestone.email, password);
+                 await autenticar(cd_firestone?.email, password);
                  if (usertasy?.dS_EMAIL) {
                      await updateEmailFirebase(usertasy.dS_EMAIL, cd_firestone);
                  }
@@ -122,55 +130,55 @@ export default function LoginPassword() {
              if (code) {
                  switch (code) {
                      case 'auth/invalid-email':
-                         addAlert({
+                         /* addAlert({
                              message: 'Formato Inválido de E-mail!',
                              status: 'error',
-                         });
+                         }); */
                          break;
                      case 'auth/user-not-found':
-                         addAlert({
+                         /* addAlert({
                              message: 'Usuário não encontrado!',
                              status: 'error',
-                         });
+                         }); */
                          break;
                      case 'auth/wrong-password':
-                         addAlert({
+                         /* addAlert({
                              message: 'A senha é inválida!',
                              status: 'error',
-                         });
+                         }); */
                          break;
                      case 'auth/network-request-failed':
-                         addAlert({
+                         /* addAlert({
                              message: 'Verifique sua conexão com a Internet!',
-                             status: 'error',
-                         });
+                             status : 'error',
+                         }); */
                          break;
                      case 'auth/too-many-requests':
-                         addAlert({
+                         /* addAlert({
                              message: 'Aguarde!, muitas tentativas de acesso!',
                              status: 'error',
-                         });
+                         }); */
                          break;
                      case 'auth/email-already-in-use':
-                         addAlert({
+                         /* addAlert({
                              message: 'Email já está sendo utilizado!',
                              status: 'error',
-                         });
+                         }); */
                          break;
                      default:
-                         addAlert({ message: error.code, status: 'error' });
+                         /* addAlert({ message: error.code, status: 'error' }); */
                          break;
                  }
              } else {
                  switch (message) {
                      default:
-                         addAlert({ message: error.message, status: 'error' });
+                         /* addAlert({ message: error.message, status: 'error' }); */
                          break;
                  }
              }
              setLoadingActive(false);
          }
-     }; */
+     };
 
     const FormSchema = Yup.object().shape({
         Senha: Yup.string()
@@ -187,14 +195,14 @@ export default function LoginPassword() {
                 style={styles.BackgroundImage}
                 source={require('../../../assets/images/LogoPronutrirBackground.png')}>
                 <View style={{ marginTop: 20 }}>
-                    <BackButton onPress={() => navigation.goBack()} />
+                    <CicleButton onPress={() => navigation.goBack()} />
                 </View>
                 <Formik
                     initialValues={{
                         Senha: '',
                     }}
                     onSubmit={(values) => {
-                        /* autenticacao(values.Senha); */
+                        autenticacao(values.Senha);
                     }}
                     validationSchema={FormSchema}>
                     {({
@@ -259,7 +267,7 @@ export default function LoginPassword() {
                                         variant="primary"
                                         size="large"
                                         shape="pill"
-                                        onPress={() => setsigned(true)}
+                                        onPress={() => handleSubmit()}
                                         style={{ width: '50%' }}
                                         textStyle={{ fontSize: 25 }}
                                         elevated
@@ -269,12 +277,12 @@ export default function LoginPassword() {
                         </View>
                     )}
                 </Formik>
-                {/* <Loading activeModal={loadingActive} />
-                <Notification
-                    active={modalNotification.active}
-                    setActive={setModalNotification}
-                    type={modalNotification.type}
-                    message={modalNotification.message}
+                <Loading activeModal={loadingActive} />
+                {/* <Notification
+                    active    = {modalNotification.active}
+                    setActive = {setModalNotification}
+                    type      = {modalNotification.type}
+                    message   = {modalNotification.message}
                 /> */}
             </ImageBackground>
         </Pressable>

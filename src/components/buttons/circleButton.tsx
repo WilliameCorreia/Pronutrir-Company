@@ -1,6 +1,5 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { Feather } from '@expo/vector-icons';
 import useTheme from '../../hooks/useTheme';
@@ -10,21 +9,23 @@ import Button from '../Button';
 
 interface Props {
     onPress(): void;
+    icon?: React.ReactNode | null;
 }
 
-const BackButton: React.FC<Props> = ({ onPress }: Props) => {
+const CicleButton: React.FC<Props> = ({ onPress, icon }: Props) => {
 
     const theme = useTheme();
     const styles = useThemeAwareObject(createStyles);
 
     return (
         <Button 
-            icon={<Feather name="corner-up-left" size={25} color="#FFF" />}
+            icon={ icon ?? <Feather name="corner-up-left" size={25} color="#000000" />}
             shape="circle" 
-            variant="primary" 
+            variant="secondary" 
             size="large"
             style={styles.circleButtonLarge}
             elevated
+            onPress={onPress}
           />
     );
 };
@@ -39,6 +40,7 @@ const createStyles = (theme: ThemeContextData) => {
             justifyContent: 'center',
             alignItems: 'center',
             margin: RFPercentage(1),
+            backgroundColor: theme.colors.buttonBackground,
           },
     });
     return styles;
@@ -46,4 +48,4 @@ const createStyles = (theme: ThemeContextData) => {
 
 
 
-export default BackButton;
+export default CicleButton;

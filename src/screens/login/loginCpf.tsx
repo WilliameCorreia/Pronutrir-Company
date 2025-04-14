@@ -8,9 +8,8 @@ import {
   Platform,
 } from 'react-native';
 import { TextInputMask } from 'react-native-masked-text';
-/* import Btnprosseguir from '../../components/buttons/Btnprosseguir'; */
 import styles from './style';
-import BackButton from '../../components/buttons/backButton';
+import CicleButton from '../../components/buttons/circleButton';
 /* import Api from '../../services/api'; */
 /* import { valicacaoCPF } from '../../services/validacaoCpf';
 import Loading from '../../components/Loading/Loading';
@@ -27,15 +26,21 @@ import { StackNavigation } from '../../routes/stack.routes';
 import { useNavigation } from '@react-navigation/native';
 import Button from '../../components/Button';
 import Api from '../../services/api';
+import { valicacaoCPF } from '../../services/validacaoCpf';
+import AuthContext from '../../contexts/auth';
+import Loading, { LoadHandles } from '../../components/Loading/Loading';
+import { collection, getDoc, getFirestore, query, where, getDocs } from "firebase/firestore"; 
+import { app } from '../../firebaseConfig';
 
 export default function LoginCpf() {
-  /* const { addAlert, addNotification } = useContext(NotificationGlobalContext);
-  const { stateAuth, dispatchAuth } = useContext(AuthContext); */
+  //const { addAlert, addNotification } = useContext(NotificationGlobalContext);
+  const { stateAuth, dispatchAuth } = useContext(AuthContext);
 
   const styles = useThemeAwareObject(_styles);
   const navigation = useNavigation<StackNavigation>();
 
-  const [modalActive, setModalActive] = useState(false);
+  const loadingRef = useRef<LoadHandles>(null);
+
   const [modalNotification, setModalNotification] = useState({
     active: false,
     message: '',
@@ -46,91 +51,109 @@ export default function LoginCpf() {
 
   // consulta o cpf do cliente na api tasy
   async function getCpf(cpf: string) {
-    return Api.get(`PessoaFisica/buscaCpfEmail?cpf=${cpf}`).then(response => {
+    return Api.get(`v1/PessoaFisica/buscaCpfEmail?cpf=${cpf}`).then(response => {
       const { result } = response.data;
       return result;
     });
   }
 
-  /* const consultaFirebase = async (cpf, email) => {
-    const usersRef = firestore().collection('users');
- 
-    const cpfExiste = await usersRef.where('cpf', '==', cpf).get();
- 
-    if (!cpfExiste.empty) {
-      return true;
-    } else {
+  const consultaFirebase = async (cpf: string, email: string) => {
+    try {
+      const db = getFirestore(app);
+      
+      // Cria a consulta para verificar documentos onde o campo cpf é igual ao cpf fornecido
+      const q = query(collection(db, 'users'), where('cpf', '==', cpf));
+      
+      // Executa a consulta e obtém os documentos
+      const querySnapshot = await getDocs(q);
+      
+      // Verifica se a consulta retornou algum documento
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("Erro ao consultar o Firestore:", error);
       return false;
     }
-  }; */
+  };
 
-  /*   const validacaoUsuario = async values => {
-      let _Cpf = values.CPF.replace(/[.-]/g, '');
-      setModalActive(true);
-  
-      try {
-        let firebaseExiste = null;
-  
-        // consulta o cpf do cliente na api tasy
-        const dadosTasy = await getCpf(_Cpf);
-  
-        if (!dadosTasy) {
-          setModalActive(false);
-          addAlert({
-            message: 'Usuário não encontrado!',
-            status: 'error',
-          });
-          return;
-        }
-  
-        if (dadosTasy && dadosTasy.iE_FUNCIONARIO === 'S') {
-          //guarda os dados do cliente no reducer
-          dispatchAuth({ type: 'setUserTasy', payload: dadosTasy });
-  
-          // consulta se o usuario tem cadastro no firebase
-          firebaseExiste = await consultaFirebase(
-            dadosTasy.nR_CPF,
-            dadosTasy.dS_EMAIL,
-          );
-  
-          if (firebaseExiste) {
-            navigation.navigate('Login');
-          } else {
-            navigation.navigate('ConsultaNome');
-          }
+  const validacaoUsuario = async (CPF: string) => {
+    let _Cpf = CPF.replace(/[.-]/g, '');
+    loadingRef.current?.openModal();
+
+    try {
+      let firebaseExiste = null;
+
+      // consulta o cpf do cliente na api tasy
+      const dadosTasy = await getCpf(_Cpf);
+
+      if (!dadosTasy) {
+        loadingRef.current?.closeModal();
+        /* addAlert({
+          message: 'Usuário não encontrado!',
+          status: 'error',
+        }); */
+        return;
+      }
+
+      if (dadosTasy && dadosTasy.iE_FUNCIONARIO === 'S') {
+        //guarda os dados do cliente no reducer
+        dispatchAuth({ type: 'setUserTasy', payload: dadosTasy });
+
+        // consulta se o usuario tem cadastro no firebase
+        firebaseExiste = await consultaFirebase(
+          dadosTasy.nR_CPF,
+          dadosTasy.dS_EMAIL,
+        );
+
+        if (firebaseExiste) {
+          navigation.navigate('LoginPassword');
         } else {
-          setModalActive(false);
-          addAlert({
-            message: 'Acesso disponível somente para funcionários!',
-            status: 'error',
-          });
+          //navigation.navigate('ConsultaNome');
         }
-      } catch (error) {
-        setModalActive(false);
+      } else {
+        loadingRef.current?.closeModal();
+        /* addAlert({
+          message: 'Acesso disponível somente para funcionários!',
+          status: 'error',
+        }); */
+      }
+    } catch (error) {
+      loadingRef.current?.closeModal();
+      
+      if (error instanceof Error) {
         const { message } = error;
         if (message) {
           setModalNotification(prevState => {
             return {
               ...prevState,
               active: true,
-              message: 'error.message',
+              message: message,
               type: 'error',
             };
           });
         }
-      } finally {
-        setModalActive(false);
+      } else {
+        setModalNotification(prevState => {
+          return {
+            ...prevState,
+            active: true,
+            message: 'An unknown error occurred',
+            type: 'error',
+          };
+        });
       }
-    }; */
+    } finally {
+      loadingRef.current?.closeModal();
+    }
+  };
 
   const FormSchema = Yup.object().shape({
-    /* CPF: Yup.string()
+    CPF: Yup.string()
       .required('CPF é obrigatório!')
       .test(
         'validationCpf',
         'CPF inválido',
-        value => value && valicacaoCPF(value.replace(/[.-]/g, '')),
-      ), */
+        value => Boolean(value) && valicacaoCPF(value.replace(/[.-]/g, '')),
+      ),
   });
 
   return (
@@ -139,14 +162,14 @@ export default function LoginCpf() {
         style={styles.BackgroundImage}
         source={require('../../../assets/images/LogoPronutrirBackground.png')}>
         <View style={{ marginTop: 20 }}>
-          <BackButton onPress={() => navigation.goBack()} />
+          <CicleButton onPress={() => navigation.goBack()} />
         </View>
         <Formik
           initialValues={{
             CPF: '',
           }}
           onSubmit={(values) => {
-            /* autenticacao(values.Senha); */
+            validacaoUsuario(values.CPF);
           }}
           validationSchema={FormSchema}>
           {({
@@ -188,7 +211,7 @@ export default function LoginCpf() {
                     variant="primary"
                     size="large"
                     shape="pill"
-                    onPress={() => navigation.navigate("LoginPassword")}
+                    onPress={() => handleSubmit()}
                     style={{ width: '50%' }}
                     textStyle={{ fontSize: 25 }}
                     elevated
@@ -198,8 +221,8 @@ export default function LoginCpf() {
             </View>
           )}
         </Formik>
-        {/* <Loading activeModal={loadingActive} />
-                <Notification
+        <Loading ref={loadingRef} />
+        {/* <Notification
                     active={modalNotification.active}
                     setActive={setModalNotification}
                     type={modalNotification.type}

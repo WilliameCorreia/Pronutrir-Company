@@ -13,6 +13,8 @@ import LoginCpf from '../screens/login/loginCpf';
 import { ButtonExamples, CardExamples, ComponentsShowcase } from '../screens/Examples';
 import PainelSenha from '../screens/painelSenha/PainelSenha';
 import DashBoard from '../screens/dashboard/dashboard';
+import PainelSenhaOptions from '../screens/painelSenha/painelSenhaOptions/painelSenhaOptions';
+import PrintBluetooth from '../screens/painelSenha/PrintBluetooth/PrintBluetooth';
 
 export type RootStackParamList = {
     Dashboard: undefined;
@@ -32,6 +34,8 @@ export type RootStackParamListExemples = {
 export type RootStackParamListDashboard = {
     DashBoard: undefined;
     PainelSenha: undefined;
+    PainelSenhaOptions: undefined;
+    PrintBluetooth: undefined;
 }
 
 const StackDashboard = createNativeStackNavigator<RootStackParamListDashboard>();
@@ -93,6 +97,8 @@ function StackRoutesDashboard() {
         >
             <StackDashboard.Screen name='DashBoard' component={DashBoard} options={{ headerShown: false }} />
             <StackDashboard.Screen name='PainelSenha' component={PainelSenha} options={{ headerShown: false }} />
+            <StackDashboard.Screen name='PainelSenhaOptions' component={PainelSenhaOptions} options={{ headerShown: false }} />
+            <StackDashboard.Screen name='PrintBluetooth' component={PrintBluetooth} options={{ headerShown: false }} />
         </StackDashboard.Navigator>
     )
 }

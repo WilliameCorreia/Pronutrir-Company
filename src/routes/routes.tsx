@@ -18,6 +18,8 @@ const Routes = (props: Props) => {
 
     //return <StackRoutesExemples />
 
+    debugger;
+
     if (loading) {
         return (<Inicial />);
     }
